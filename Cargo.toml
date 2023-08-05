@@ -1,0 +1,26 @@
+[package]
+name = "graphql_server"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+members = [".", "migration", "entity"]
+
+[dependencies]
+migration = { path = "migration"}
+entity = { path = "entity"}
+actix-web = "4.3.1"
+async-graphql = "6.0.1"
+async-graphql-actix-web = "6.0.1"
+serde = "1.0.181"
+dotenv = "0.15.0"
+bcrypt = "0.15.0"
+jwt-simple = "0.11.6"
+chrono = "0.4.26"
+futures = "0.3.28"
+
+[dependencies.sea-orm]
+version = "0.12"
+features = ["sqlx-postgres", "runtime-tokio-rustls", "with-chrono", "with-time", "with-uuid", "macros"]
