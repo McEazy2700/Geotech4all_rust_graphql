@@ -3,6 +3,7 @@ use async_graphql::http::GraphiQLSource;
 use async_graphql_actix_web::{GraphQLResponse, GraphQLRequest};
 use dotenv::dotenv;
 use migration::{Migrator, MigratorTrait};
+use std::env::var;
 
 pub mod graphql;
 pub mod db_manager;
@@ -46,8 +47,17 @@ async fn main() -> std::io::Result<()> {
     
     let schema = build_schema();
     
-    println!("GraphIQL playground: http://localhost:8080");
     
+    let debug = var("DEBUG").unwrap_or(String::from("true"));
+    let port = var("PORT").unwrap_or(String::from("8080"));
+    
+    let addr = if debug == "true" {
+        format!("127.0.0.1:{port}")
+    } else {
+        format!("0.0.0.0:{port}")
+    };
+    
+    println!("GraphIQL playground: {addr}");
     HttpServer::new(move ||{
         App::new()
             .app_data(Data::new(schema.clone()))
@@ -55,7 +65,7 @@ async fn main() -> std::io::Result<()> {
             .service(playground)
             .service(execute)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(addr)?
     .run()
     .await
 }
